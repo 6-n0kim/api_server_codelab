@@ -12,9 +12,12 @@ const PORT = process.env.PORT || 3000;
 
 // 미들웨어
 app.use(cors()); // CORS 설정
-app.use(helmet()); // 보안 헤더 설정
+app.use(helmet({
+    contentSecurityPolicy: false // CSP 완전히 비활성화
+})); // 보안 헤더 설정
 app.use(express.json()); // JSON 요청 본문 파싱
 app.use(express.urlencoded({ extended: true })); // URL 인코딩된 요청 본문 파싱
+app.use(express.static('public')); // 정적 파일 제공
 
 // Pino 로깅 미들웨어
 app.use((req, res, next) => {
