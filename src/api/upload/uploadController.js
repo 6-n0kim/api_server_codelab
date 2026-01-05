@@ -75,15 +75,17 @@ const uploadImages = async (req, res) => {
                 });
 
                 blobStream.on('finish', async () => {
-                    // 파일을 공개로 설정
-                    await blob.makePublic();
-
-                    const publicUrl = `https://storage.googleapis.com/${bucketName}/${fileName}`;
+                    // Signed URL 생성 (7일간 유효)
+                    const [signedUrl] = await blob.getSignedUrl({
+                        version: 'v4',
+                        action: 'read',
+                        expires: Date.now() + 7 * 24 * 60 * 60 * 1000 // 7일
+                    });
 
                     fileInfos.push({
                         originalName: file.originalname,
                         filename: fileName,
-                        url: publicUrl,
+                        url: signedUrl,
                         size: file.size,
                         mimetype: file.mimetype
                     });
