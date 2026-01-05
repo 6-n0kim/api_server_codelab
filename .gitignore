@@ -1,0 +1,5 @@
+.env
+!readme.md
+*.md
+node_modules/
+dist/

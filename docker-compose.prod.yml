@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  # Cloud SQL Proxy 서비스
+  cloud-sql-proxy:
+    image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.8.2
+    container_name: cloud-sql-proxy
+    command:
+      - "/cloud-sql-proxy"
+      - "${INSTANCE_CONNECTION_NAME}"
+      - "--address=0.0.0.0"
+      - "--port=5432"
+    environment:
+      - INSTANCE_CONNECTION_NAME=${INSTANCE_CONNECTION_NAME}
+    networks:
+      - app-network
+    restart: unless-stopped
+    # GCP 인증을 위한 서비스 계정 키 마운트
+    volumes:
+      - ./service-account-key.json:/config/service-account-key.json:ro
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/config/service-account-key.json
+
+  # API 서버
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: api-server
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DB_HOST=cloud-sql-proxy
+      - DB_PORT=5432
+      - DB_USER=${DB_USER}
+      - DB_NAME=${DB_NAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+    depends_on:
+      - cloud-sql-proxy
+    restart: unless-stopped
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+
+networks:
+  app-network:
+    driver: bridge
