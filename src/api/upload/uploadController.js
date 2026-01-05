@@ -6,7 +6,8 @@ const logger = require('../../utils/logger');
 // GCS 설정
 const storage = new Storage();
 const bucketName = 'codelab-lbstech-storage';
-const folderName = 'jun0-codelab/img_folder';
+const firstFolderName = 'jun0-codelab';
+const secondFolderName = 'img_folder';
 
 // Multer 메모리 스토리지 사용 (파일을 메모리에 임시 저장)
 const multerStorage = multer.memoryStorage();
@@ -50,7 +51,7 @@ const uploadImages = async (req, res) => {
         // 각 파일을 GCS에 업로드
         for (const file of req.files) {
             const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-            const fileName = `${folderName}/${file.fieldname}-${uniqueSuffix}${path.extname(file.originalname)}`;
+            const fileName = `${firstFolderName}/${secondFolderName}/${file.fieldname}-${uniqueSuffix}${path.extname(file.originalname)}`;
             const blob = bucket.file(fileName);
 
             const blobStream = blob.createWriteStream({
