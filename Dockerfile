@@ -21,8 +21,8 @@ COPY --chown=nodejs:nodejs public ./public
 ENV NODE_ENV=production
 ENV PORT=8080
 
-# uploads 디렉토리 생성 (파일 업로드용) - USER nodejs 이전에 생성
-RUN mkdir -p uploads && chown -R nodejs:nodejs /app
+# /app 디렉토리 소유권 설정
+RUN chown -R nodejs:nodejs /app
 
 # non-root 사용자로 전환
 USER nodejs
