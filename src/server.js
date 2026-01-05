@@ -59,7 +59,7 @@ async function startServer(){
             process.exit(1);
         }
 
-        app.listen(PORT, () => {
+        app.listen(PORT,'0.0.0.0', () => {
             logger.info(`Server is running on port ${PORT}`);
             logger.info(`Database connected: ${isConnected}`);
             logger.info(`Environment: ${process.env.NODE_ENV}`);
