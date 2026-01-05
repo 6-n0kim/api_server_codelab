@@ -1,6 +1,6 @@
 const pino = require('pino');
 
-// NODE_ENV가 production이 아닐 때만 pino-pretty 사용
+// 운영 환경(production)이 아닐 때만 pino-pretty 사용
 const transport = process.env.NODE_ENV !== 'production' 
     ? {
         target: 'pino-pretty',

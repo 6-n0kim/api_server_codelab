@@ -3,11 +3,16 @@ const path = require('path');
 const fs = require('fs');
 const logger = require('../../utils/logger');
 
-// uploads 디렉토리가 없으면 생성
+// uploads 디렉토리가 없으면 생성 (Dockerfile에서 이미 생성되므로 스킵)
 const uploadDir = 'uploads';
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-    logger.info(`Created upload directory: ${uploadDir}`);
+try {
+    if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+        logger.info(`Created upload directory: ${uploadDir}`);
+    }
+} catch (error) {
+    // 이미 존재하거나 권한 없음 - 무시
+    logger.warn(`Upload directory check skipped: ${error.message}`);
 }
 
 // 파일 저장 설정
