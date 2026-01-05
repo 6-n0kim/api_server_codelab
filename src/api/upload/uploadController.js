@@ -6,7 +6,7 @@ const logger = require('../../utils/logger');
 // GCS 설정
 const storage = new Storage();
 const bucketName = 'codelab-lbstech-storage';
-const folderName = 'jun0-codelab';
+const folderName = 'jun0-codelab/img_folder';
 
 // Multer 메모리 스토리지 사용 (파일을 메모리에 임시 저장)
 const multerStorage = multer.memoryStorage();
